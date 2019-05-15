@@ -16,7 +16,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class BluetoothActivity extends AppCompatActivity {
+public class BluetoothActivity extends AppCompatActivity {  //testing
 
     private Set<BluetoothDevice> pairedDevices;
     private BluetoothAdapter BA;
