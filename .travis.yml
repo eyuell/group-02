@@ -43,7 +43,7 @@ before_script:
     - adb devices # Display list of devices
     - adb shell input keyevent 82 &
     # Set `gradlew` as executable
-    - chmod +x $TRAVIS_BUILD_DIR/group-02-app_dev/gradlew
+    - chmod +x $TRAVIS_BUILD_DIR/gradlew
 
 
 before_install:
