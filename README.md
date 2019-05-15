@@ -1,4 +1,4 @@
-## SafeSweeper (Group-02) [![Build Status](https://travis-ci.org/eyuell/group-02-app_dev?branch=master)](https://travis-ci.org/eyuell/group-02-app_dev)
+## SafeSweeper (Group-02)[![Build Status](https://travis-ci.com/eyuell/group-02-app_dev.svg?branch=master)](https://travis-ci.com/eyuell/group-02-app_dev)
 *A Cheap and Safe way of Disabling Land Mines*
 
 ### Who?
