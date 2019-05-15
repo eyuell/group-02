@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
         firstText = convertLocation(firstText);
         secondText = convertLocation(secondText);
 
-        return firstText + " " + secondText;
+        return firstText + ", " + secondText;
     }
 
     public String convertLocation(String text){ //Eyuell
