@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SafeSweeper</string>
+    <string name="action_settings">Settings</string>
+    <string name="add_boundary">Set Digital Boundary</string>
 </resources>

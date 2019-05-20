@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String ACKNOWLEDGE_MINE = "m";
 
     //inputs from car
-    public static final String LOCATION_REGEX = "c-?\\d+\\.\\d+\\s-?\\d+\\.\\d+/";  //Eyuell HM
+    public static final String LOCATION_REGEX = "c-?\\d+\\.\\d+\\s-?\\d+\\.\\d+/";
     public static final String MINE_REGEX = "m";
     public static final String LAT_LNG_SEPARATOR = "\\s";
     public static final String END_OF_INPUT = "/";
@@ -261,25 +261,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void writeToCar(String command) {
+    private boolean writeToCar(String command) {
         try {
             outputStream.write(command.getBytes());
+            return true;
         } catch (IOException exc) {
             Log.e("IOException: ", exc.getMessage());
+            return false;
         }
     }
 
-    private void writeToCarTest(byte[] commandTest) {
+    private boolean writeToCarTest(byte[] commandTest) {
         try {
             outputStream.write(commandTest);
+            return true;
         } catch (IOException exc) {
             Log.e("IOException: ", exc.getMessage());
+            return false;
         }
     }
 
-    private void handleInput(String input) {
+    private int handleInput(String input) {
         if(input.matches(MINE_REGEX)) {
             showMineDetected();
+            return 2;
         }
 
         else if(input.matches(LOCATION_REGEX)){
@@ -287,8 +292,9 @@ public class MainActivity extends AppCompatActivity {
             int lastIndex = input.indexOf(END_OF_INPUT);
 
             String locationStr  = input.substring(1, lastIndex);
-            locationStr = extractLocation(locationStr); //Eyuell
+            locationStr = extractLocation(locationStr);
             showLocation(locationStr);
+            return 3;
 
             /* if we need the coordinates as double
             String latitudeStr = input.substring(1, indexOfSpace);
@@ -297,9 +303,10 @@ public class MainActivity extends AppCompatActivity {
             double lng = convertToDouble(longitudeStr);
             */
         }
+        return 0;
     }
 
-    private double convertToDouble(String str){
+    public double convertToDouble(String str){
         if(str.matches(DOUBLE_WITH_DECIMALS_REGEX)){
             return Double.parseDouble(str);
         }else{
@@ -335,17 +342,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public String extractLocation(String locationStr){  //Eyuell
-        String firstText = locationStr.substring(0,locationStr.indexOf(" "));
-        String secondText = locationStr.substring(locationStr.indexOf(" ") + 1);
+    //Preparing text to be displayed on location view
+    public String extractLocation(String locationStr){
+        String firstText = locationStr.substring(0,locationStr.indexOf(LAT_LNG_SEPARATOR));
+        String secondText = locationStr.substring(locationStr.indexOf(LAT_LNG_SEPARATOR) + 1);
+        String result = "\n" + "             Mine Location       " +"\n";   //not to conflict when shown together with 'detected' text
 
         firstText = convertLocation(firstText);
         secondText = convertLocation(secondText);
 
-        return firstText + ", " + secondText;
+        return result + firstText + ", " + secondText + "      ";
     }
 
-    public String convertLocation(String text){ //Eyuell
+    //to display the location in DMS (degree, minute, second) format
+    public String convertLocation(String text){
         String direction;
         if(text.charAt(0) == '-'){
             if(text.indexOf(".") == 3){
