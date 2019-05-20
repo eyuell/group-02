@@ -5,9 +5,14 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -33,6 +38,12 @@ public class MainActivity extends AppCompatActivity {
     TextView locationText;
     ToggleButton steeringToggle;
 
+
+    String lat1Text = "";
+    String lat2Text = "";
+    String lon1Text = "";
+    String lon2Text = "";
+
     public static final int THROTTLE_MIN = -30;
     public static final int THROTTLE_DEFAULT = 30;
 
@@ -54,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String DOUBLE_WITH_DECIMALS_REGEX = "\\d+\\.\\d+";
 
+    public static final String COORDINATE_REGEX = "-?\\d+\\.\\d+";
+
     private int speedValue;
     private int steerValue;
     private String command;
@@ -72,8 +85,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        macAddress = getIntent().getStringExtra("MAC");
+//        macAddress = getIntent().getStringExtra("MAC");
 
         textView1 = (TextView) findViewById(R.id.textView1);
         throttleBar = (SeekBar) findViewById(R.id.throttleBar);
@@ -89,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         //Start task to connect with cars bluetooth asynchronously
         new ConnectBT().execute();
 
+        isBtConnected = true;
     }
 
 
@@ -104,17 +120,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... devices) //while the progress dialog is shown, the connection is done in background
         {
-            try {
-                if (btSocket == null || !isBtConnected) {
-                    mBluetooth = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
-                    BluetoothDevice mBluetoothDevice = mBluetooth.getRemoteDevice(macAddress);//connects to the device's address and checks if it's available
-                    btSocket = mBluetoothDevice.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
-                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
-                    btSocket.connect();//start connection
-                }
-            } catch (IOException e) {
-                ConnectSuccess = false;//if the try failed, you can check the exception here
-            }
+//            try {
+//                if (btSocket == null || !isBtConnected) {
+//                    mBluetooth = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
+//                    BluetoothDevice mBluetoothDevice = mBluetooth.getRemoteDevice(macAddress);//connects to the device's address and checks if it's available
+//                    btSocket = mBluetoothDevice.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
+//                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+//                    btSocket.connect();//start connection
+//                }
+//            } catch (IOException e) {
+//                ConnectSuccess = false;//if the try failed, you can check the exception here
+//            }
             return null;
         }
 
@@ -124,23 +140,24 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(result);
 
             setConnectionTextView("");
-            //connectionTextView.setText("");
+            connectionTextView.setText("");
 
-            if (!ConnectSuccess) {
-                Toast.makeText(MainActivity.this, "Could not connect..", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
-                startActivity(intent);
-            } else {
+//            if (!ConnectSuccess) {
+//                Toast.makeText(MainActivity.this, "Could not connect..", Toast.LENGTH_LONG).show();
+//                Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
+//                startActivity(intent);
+//            } else
+                {
                 Toast.makeText(MainActivity.this, "Connected!", Toast.LENGTH_SHORT).show();
                 isBtConnected = true;
 
-                try {
-                    outputStream = btSocket.getOutputStream();
-                    inputStream = btSocket.getInputStream();
-
-                } catch (IOException exc) {
-                    Log.e("IOException: ", exc.getMessage());
-                }
+//                try {
+//                    outputStream = btSocket.getOutputStream();
+//                    inputStream = btSocket.getInputStream();
+//
+//                } catch (IOException exc) {
+//                    Log.e("IOException: ", exc.getMessage());
+//                }
 
                 getLocationBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -158,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
                         commandTest = Command.speed(speedValue);
                         writeToCarTest(commandTest);
                     }
-
 
                     @Override
                     public void onStartTrackingTouch(SeekBar seekBar) {
@@ -188,7 +204,6 @@ public class MainActivity extends AppCompatActivity {
                         writeToCar(command);
                     }
                 });
-
 
                 steeringBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
 
@@ -239,26 +254,223 @@ public class MainActivity extends AppCompatActivity {
                             int bytes;
                             String readMessage;
 
-                            try {
-                                if (inputStream.available() != 0) {
-                                    bytes = inputStream.read(buffer);
-                                    readMessage = new String(buffer, 0, bytes);
-                                    handleInput(readMessage);
-                                }
-                            } catch (IOException exc) {
-                                Log.e("IOException: ", exc.getMessage());
-                            }
-                            try {
-                                Thread.sleep(500);
-                            } catch (InterruptedException ie) {
-                                // do nothing
-                            }
+//                            try {
+//                                if (inputStream.available() != 0) {
+//                                    bytes = inputStream.read(buffer);
+//                                    readMessage = new String(buffer, 0, bytes);
+//                                    handleInput(readMessage);
+//                                }
+//                            } catch (IOException exc) {
+//                                Log.e("IOException: ", exc.getMessage());
+//                            }
+//                            try {
+//                                Thread.sleep(500);
+//                            } catch (InterruptedException ie) {
+//                                // do nothing
+//                            }
                             continue;
                         }
                     }
                 }).start();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) { //menu created
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_activity_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {   //when items of menu are selected
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();  //get the id of item selected
+
+        switch (id){
+            case R.id.action_addBoundary:   //id add date is selected
+                openAddBoundaryActivity();
+                break;
+            default:    //R.id.action_settings
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void openAddBoundaryActivity(){
+        final AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+        View mView = getLayoutInflater().inflate(R.layout.boundary_input, null);
+        mBuilder.setCancelable(true);
+
+        final TextInputEditText lat1Input = (TextInputEditText) mView.findViewById(R.id.lat1InputTxt);
+        final TextInputEditText lat2Input = (TextInputEditText) mView.findViewById(R.id.lat2InputTxt);
+        final TextInputEditText lon1Input = (TextInputEditText) mView.findViewById(R.id.lon1InputTxt);
+        final TextInputEditText lon2Input = (TextInputEditText) mView.findViewById(R.id.lon2InputTxt);
+
+        Button cancelButton = (Button) mView.findViewById(R.id.cancelButton);
+        Button applyButton = (Button) mView.findViewById(R.id.insertButton);
+
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+
+        applyButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                boolean notComplete = false;
+                String lat1 = lat1Input.getText().toString().trim();
+                String lat2 = lat2Input.getText().toString().trim();
+                String lon1 = lon1Input.getText().toString().trim();
+                String lon2 = lon2Input.getText().toString().trim();
+
+                lat1 = limitDigit(lat1);
+                lat2 = limitDigit(lat2);
+                lon1 = limitDigit(lon1);
+                lon2 = limitDigit(lon2);
+
+                if(lat1.isEmpty()){
+                    lat1Input.setError("Field is empty");
+                    notComplete = true;
+                } else if (!lat1.matches(COORDINATE_REGEX)){
+                    lat1Input.setError("use format of 00.0000000");
+                    notComplete = true;
+                } else if (latitudeDigit(lat1)){
+                    lat1Input.setError("latitude should be two digits max before decimal");
+                    notComplete = true;
+                }
+
+                if(lat2.isEmpty()){
+                    lat2Input.setError("Field is empty");
+                    notComplete = true;
+                } else if (!lat2.matches(COORDINATE_REGEX)){
+                    lat2Input.setError("use format of 00.0000000");
+                    notComplete = true;
+                } else if (latitudeDigit(lat2)){
+                    lat2Input.setError("latitude should be two digits max before decimal");
+                    notComplete = true;
+                }
+
+                if(lon1.isEmpty()){
+                    lon1Input.setError("Field is empty");
+                    notComplete = true;
+                } else if (!lon1.matches(COORDINATE_REGEX)){
+                    lon1Input.setError("use format of 000.0000000");
+                    notComplete = true;
+                } else if (longitudeDigit(lon1)){
+                    lon1Input.setError("latitude should be three digits max before decimal");
+                    notComplete = true;
+                }
+
+                if(lon2.isEmpty()){
+                    lon2Input.setError("Field is empty");
+                    notComplete = true;
+                } else if (!lon2.matches(COORDINATE_REGEX)){
+                    lon2Input.setError("use format of 000.0000000");
+                    notComplete = true;
+                } else if (longitudeDigit(lon2)){
+                    lon2Input.setError("latitude should be three digits max before decimal");
+                    notComplete = true;
+                }
+
+                if(!notComplete){
+                    lat1Text = lat1;
+                    lat2Text = lat2;
+                    lon1Text = lon1;
+                    lon2Text = lon2;
+
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                dialog.cancel();
+            }
+        });
+
+
+        /*builder.setTitle("Set Location Boundary");
+
+        builder.setMessage("Enter the latitude and longitude");
+
+        // Set up the location input
+        final TextInputEditText lat1Input = new TextInputEditText(this);
+        final TextInputEditText lat2Input = new TextInputEditText(this);
+        final TextInputEditText lon1Input = new TextInputEditText(this);
+        final TextInputEditText lon2Input = new TextInputEditText(this);
+
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        lat1Input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+        lat2Input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+        lon1Input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+        lon2Input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+        builder.setView(lat1Input);
+        builder.setView(lat2Input);
+        builder.setView(lon1Input);
+        builder.setView(lon2Input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String text1 = lat1Input.getText().toString();
+                String text2 = lat2Input.getText().toString();
+                String text3 = lon1Input.getText().toString();
+                String text4 = lon2Input.getText().toString();
+
+                while (!validateInput(text1) && !validateInput(text2) && !validateInput(text3) && !validateInput(text4)){}
+
+                lat1Text = text1;
+                lat2Text = text2;
+                lon1Text = text3;
+                lon2Text = text4;
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();*/
+    }
+
+
+    private boolean latitudeDigit(String lat){
+        if(lat.charAt(0) == '-')
+            lat = lat.substring(1);
+
+        if(lat.indexOf(".") > 2)
+            return true;
+        else
+            return false;
+    }
+
+    private boolean longitudeDigit(String lat){
+        if(lat.charAt(0) == '-')
+            lat = lat.substring(1);
+
+        if(lat.indexOf(".") > 3)
+            return true;
+        else
+            return false;
+    }
+
+    private String limitDigit(String input){
+        int last = input.length()-1;
+        int decimal = input.indexOf(".");
+
+        if((last - decimal) > 7)
+            return input.substring(0,(decimal + 7));
+        else
+            return input;
     }
 
     private boolean writeToCar(String command) {
