@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        macAddress = getIntent().getStringExtra("MAC");
+        macAddress = getIntent().getStringExtra("MAC");
 
         textView1 = (TextView) findViewById(R.id.textView1);
         throttleBar = (SeekBar) findViewById(R.id.throttleBar);
@@ -107,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
         isBtConnected = true;
     }
 
-
     private class ConnectBT extends AsyncTask<Void, Void, Void>
     {
         private boolean ConnectSuccess = true; //if it's here, it's almost connected
@@ -120,17 +119,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... devices) //while the progress dialog is shown, the connection is done in background
         {
-//            try {
-//                if (btSocket == null || !isBtConnected) {
-//                    mBluetooth = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
-//                    BluetoothDevice mBluetoothDevice = mBluetooth.getRemoteDevice(macAddress);//connects to the device's address and checks if it's available
-//                    btSocket = mBluetoothDevice.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
-//                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
-//                    btSocket.connect();//start connection
-//                }
-//            } catch (IOException e) {
-//                ConnectSuccess = false;//if the try failed, you can check the exception here
-//            }
+            try {
+                if (btSocket == null || !isBtConnected) {
+                    mBluetooth = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
+                    BluetoothDevice mBluetoothDevice = mBluetooth.getRemoteDevice(macAddress);//connects to the device's address and checks if it's available
+                    btSocket = mBluetoothDevice.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
+                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+                    btSocket.connect();//start connection
+                }
+            } catch (IOException e) {
+                ConnectSuccess = false;//if the try failed, you can check the exception here
+            }
             return null;
         }
 
@@ -142,22 +141,22 @@ public class MainActivity extends AppCompatActivity {
             setConnectionTextView("");
             connectionTextView.setText("");
 
-//            if (!ConnectSuccess) {
-//                Toast.makeText(MainActivity.this, "Could not connect..", Toast.LENGTH_LONG).show();
-//                Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
-//                startActivity(intent);
-//            } else
+            if (!ConnectSuccess) {
+                Toast.makeText(MainActivity.this, "Could not connect..", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
+                startActivity(intent);
+            } else
                 {
                 Toast.makeText(MainActivity.this, "Connected!", Toast.LENGTH_SHORT).show();
                 isBtConnected = true;
 
-//                try {
-//                    outputStream = btSocket.getOutputStream();
-//                    inputStream = btSocket.getInputStream();
-//
-//                } catch (IOException exc) {
-//                    Log.e("IOException: ", exc.getMessage());
-//                }
+                try {
+                    outputStream = btSocket.getOutputStream();
+                    inputStream = btSocket.getInputStream();
+
+                } catch (IOException exc) {
+                    Log.e("IOException: ", exc.getMessage());
+                }
 
                 getLocationBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -254,20 +253,20 @@ public class MainActivity extends AppCompatActivity {
                             int bytes;
                             String readMessage;
 
-//                            try {
-//                                if (inputStream.available() != 0) {
-//                                    bytes = inputStream.read(buffer);
-//                                    readMessage = new String(buffer, 0, bytes);
-//                                    handleInput(readMessage);
-//                                }
-//                            } catch (IOException exc) {
-//                                Log.e("IOException: ", exc.getMessage());
-//                            }
-//                            try {
-//                                Thread.sleep(500);
-//                            } catch (InterruptedException ie) {
-//                                // do nothing
-//                            }
+                            try {
+                                if (inputStream.available() != 0) {
+                                    bytes = inputStream.read(buffer);
+                                    readMessage = new String(buffer, 0, bytes);
+                                    handleInput(readMessage);
+                                }
+                            } catch (IOException exc) {
+                                Log.e("IOException: ", exc.getMessage());
+                            }
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException ie) {
+                                // do nothing
+                            }
                             continue;
                         }
                     }
@@ -392,54 +391,6 @@ public class MainActivity extends AppCompatActivity {
                 dialog.cancel();
             }
         });
-
-
-        /*builder.setTitle("Set Location Boundary");
-
-        builder.setMessage("Enter the latitude and longitude");
-
-        // Set up the location input
-        final TextInputEditText lat1Input = new TextInputEditText(this);
-        final TextInputEditText lat2Input = new TextInputEditText(this);
-        final TextInputEditText lon1Input = new TextInputEditText(this);
-        final TextInputEditText lon2Input = new TextInputEditText(this);
-
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        lat1Input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
-        lat2Input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
-        lon1Input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
-        lon2Input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
-        builder.setView(lat1Input);
-        builder.setView(lat2Input);
-        builder.setView(lon1Input);
-        builder.setView(lon2Input);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String text1 = lat1Input.getText().toString();
-                String text2 = lat2Input.getText().toString();
-                String text3 = lon1Input.getText().toString();
-                String text4 = lon2Input.getText().toString();
-
-                while (!validateInput(text1) && !validateInput(text2) && !validateInput(text3) && !validateInput(text4)){}
-
-                lat1Text = text1;
-                lat2Text = text2;
-                lon1Text = text3;
-                lon2Text = text4;
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();*/
     }
 
 
