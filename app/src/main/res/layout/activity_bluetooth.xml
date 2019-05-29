@@ -41,24 +41,16 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <Button
+        <ToggleButton
             android:id="@+id/btnOn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
             android:background="@drawable/btnsmall"
-            android:clickable="true"
-            android:onClick="on"
-            android:text="Turn On" />
+            android:onClick="checkBluetooth"
+            android:textOff="Turn On"
+            android:textOn="Turn Off" />
 
-        <Button
-            android:id="@+id/btnOff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/btnsmall"
-            android:onClick="off"
-            android:text="Turn off" />
 
         <Button
             android:id="@+id/btnRefresh"

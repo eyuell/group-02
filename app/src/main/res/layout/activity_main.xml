@@ -51,8 +51,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:background="@drawable/btnsmall"
-        android:textOff="Manual"
-        android:textOn="Automatic" />
+        android:textOff="Automatic"
+        android:textOn="Manual" />
 
     <Button
         android:id="@+id/menuBtn"
