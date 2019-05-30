@@ -492,6 +492,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         switch (item.getItemId()) {
             case R.id.map_item:
                 Intent intentM = new Intent(this, MapsActivity.class);
+                macAddress = macAddress + " " + getBoundary();
                 intentM.putExtra("MAC", macAddress);
                 startActivity(intentM);
                 return true;
@@ -611,6 +612,14 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         });
     }
 
+    //prepares digital boundaries for map
+    public String getBoundary(){
+        if (lat1Text != ""){
+            return lat1Text + " " + lat2Text + " " + lon1Text + " " + lon2Text;
+        } else 
+            return "";
+    }
+    
     //write the digital boundary to the car
     public void transferToCar (String msg){
         msg = " #" + msg + "*"; //coded so that it starts with # and finishes with *
