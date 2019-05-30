@@ -134,18 +134,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void extractBoundary(){
-        String text = address.subString(address.indexOf(" ")).trim();
+        String text = address.substring(address.indexOf(" ")).trim();
         
         if(text.length() > 0){
-            lowLat = Double.parseDouble(text.subString(0, text.indexOf(" ")));
-            text = text.subString(text.indexOf(" ") + 1);
+            lowLat = Double.parseDouble(text.substring(0, text.indexOf(" ")));
+            text = text.substring(text.indexOf(" ") + 1);
             
-            highLat = Double.parseDouble(text.subString(0, text.indexOf(" ")));
-            text = text.subString(text.indexOf(" ") + 1);
+            highLat = Double.parseDouble(text.substring(0, text.indexOf(" ")));
+            text = text.substring(text.indexOf(" ") + 1);
             
-            leftLong = Double.parseDouble(text.subString(0, text.indexOf(" ")));
+            leftLong = Double.parseDouble(text.substring(0, text.indexOf(" ")));
             
-            rightLong = Double.parseDouble(text.subString(text.indexOf(" ") + 1));
+            rightLong = Double.parseDouble(text.substring(text.indexOf(" ") + 1));
         }
     }
     
@@ -157,6 +157,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return true;
             case R.id.control_item:
                 Intent intentC = new Intent(this, MainActivity.class);
+                address = address.substring(0, address.indexOf(" ")).trim();   //incase boundary was sent together
                 intentC.putExtra("MAC", address);
                 //intentC.putExtra("MAP", "YES");
                 startActivity(intentC);
