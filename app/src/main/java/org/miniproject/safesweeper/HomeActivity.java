@@ -14,7 +14,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void connect(View v) {
-        Intent i = new Intent(this, BluetoothActivity.class);
+        Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
     }
 

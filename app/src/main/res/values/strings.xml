@@ -14,7 +14,7 @@
     <string name="showLoc">SHOW LOCATION</string>
     <string name="awkMine">ACKNOWLEDGE MINE</string>
     <string name="setBound">SET BOUNDARIES</string>
-    <string name="connection">text</string>
+    <string name="connection"></string>
     <string name="input">0</string>
     <string name="connectBlue">Connect Bluetooth</string>
     <string name="turnON">Turn On</string>

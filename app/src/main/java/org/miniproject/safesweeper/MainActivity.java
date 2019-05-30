@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         menuBtn = (Button) findViewById(R.id.menuBtn);
         boundaryBtn = (Button) findViewById(R.id.boundaryBtn);
 
-        macAddress = getIntent().getStringExtra("MAC");
+        macAddress = "";    //getIntent().getStringExtra("MAC");
 
         menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         mines = new ArrayList<Mine>();
 
         //Start task to connect with cars bluetooth asynchronously
-        new ConnectBT().execute();
+        //new ConnectBT().execute();
 
     }
 
@@ -137,18 +137,18 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         @Override
         protected Void doInBackground(Void... devices) //while the progress dialog is shown, the connection is done in background
         {
-            try {
-                if (btSocket == null || !isBtConnected) {
-                    mBluetooth = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
-                    BluetoothDevice mBluetoothDevice = mBluetooth.getRemoteDevice(macAddress);//connects to the device's address and checks if it's available
-                    btSocket = mBluetoothDevice.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
-                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
-                    btSocket.connect();//start connection
-                }
-            } catch (IOException e) {
-                ConnectSuccess = false;//if the try failed, you can check the exception here
-                Log.d("myTag", "FAILED");
-            }
+//            try {
+//                if (btSocket == null || !isBtConnected) {
+//                    mBluetooth = BluetoothAdapter.getDefaultAdapter();//get the mobile bluetooth device
+//                    BluetoothDevice mBluetoothDevice = mBluetooth.getRemoteDevice(macAddress);//connects to the device's address and checks if it's available
+//                    btSocket = mBluetoothDevice.createInsecureRfcommSocketToServiceRecord(myUUID);//create a RFCOMM (SPP) connection
+//                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+//                    btSocket.connect();//start connection
+//                }
+//            } catch (IOException e) {
+//                ConnectSuccess = false;//if the try failed, you can check the exception here
+//                Log.d("myTag", "FAILED");
+//            }
             return null;
         }
 
@@ -160,26 +160,27 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             setConnectionTextView("");
             //connectionTextView.setText("");
 
-            if (!ConnectSuccess) {
-                Toast.makeText(MainActivity.this, "Could not connect..", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
-                startActivity(intent);
-            } else {
+//            if (!ConnectSuccess) {
+//                Toast.makeText(MainActivity.this, "Could not connect..", Toast.LENGTH_LONG).show();
+//                Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
+//                startActivity(intent);
+//            } else
+//                {
                 Toast.makeText(MainActivity.this, "Connected!", Toast.LENGTH_SHORT).show();
                 isBtConnected = true;
 
-                try {
-                    outputStream = btSocket.getOutputStream();
-                    inputStream = btSocket.getInputStream();
-
-                } catch (IOException exc) {
-                    Log.e("IOException: ", exc.getMessage());
-                }
+//                try {
+//                    outputStream = btSocket.getOutputStream();
+//                    inputStream = btSocket.getInputStream();
+//
+//                } catch (IOException exc) {
+//                    Log.e("IOException: ", exc.getMessage());
+//                }
 
                 getLocationBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        writeToCar(GET_LOCATION);
+//                        writeToCar(GET_LOCATION);
                     }
                 });
 
@@ -190,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                         speedValue = THROTTLE_MIN + progress;
                         throttleText.setText(speedValue + "");
                         commandTest = Command.speed(speedValue);
-                        writeToCarTest(commandTest);
+//                        writeToCarTest(commandTest);
                     }
 
 
@@ -204,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                         throttleBar.setProgress(THROTTLE_DEFAULT);
                         speedValue = 0; //Reset speed
                         command = STAND_STILL;
-                        writeToCar(command);
+//                        writeToCar(command);
                     }
                 });
 
@@ -218,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                             command = MANUAL_MODE;
                         }
                         locationText.setText("");
-                        writeToCar(command);
+//                        writeToCar(command);
                     }
                 });
 
@@ -230,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                         steeringText.setText(steerValue + "");
 
                         commandTest = Command.steer(steerValue);
-                        writeToCarTest(commandTest);
+//                        writeToCarTest(commandTest);
                     }
 
                     @Override
@@ -248,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 getLocationBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        writeToCar(GET_LOCATION);
+//                        writeToCar(GET_LOCATION);
 
                     }
                 });
@@ -256,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 mineBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        writeToCar(ACKNOWLEDGE_MINE);
+//                        writeToCar(ACKNOWLEDGE_MINE);
                         connectionTextView.setText("");
                         locationText.setText("");
                     }
@@ -271,15 +272,15 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                             int bytes;
                             String readMessage;
 
-                            try {
-                                if (inputStream.available() != 0) {
-                                    bytes = inputStream.read(buffer);
-                                    readMessage = new String(buffer, 0, bytes);
-                                    handleInput(readMessage);
-                                }
-                            } catch (IOException exc) {
-                                Log.e("IOException: ", exc.getMessage());
-                            }
+//                            try {
+//                                if (inputStream.available() != 0) {
+//                                    bytes = inputStream.read(buffer);
+//                                    readMessage = new String(buffer, 0, bytes);
+//                                    handleInput(readMessage);
+//                                }
+//                            } catch (IOException exc) {
+//                                Log.e("IOException: ", exc.getMessage());
+//                            }
                             try {
                                 Thread.sleep(500);
                             } catch (InterruptedException ie) {
@@ -289,29 +290,30 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                         }
                     }
                 }).start();
-            }
+            //}
         }
     }
 
-    private boolean writeToCar(String command) {
-        try {
-            outputStream.write(command.getBytes());
-            return true;
-        } catch (IOException exc) {
-            Log.e("IOException: ", exc.getMessage());
-            return false;
-        }
-    }
+//    private boolean writeToCar(String command) {
+//        try {
+//
+//            outputStream.write(command.getBytes());
+//            return true;
+//        } catch (IOException exc) {
+//            Log.e("IOException: ", exc.getMessage());
+//            return false;
+//        }
+//    }
 
-    private boolean writeToCarTest(byte[] commandTest) {
-        try {
-            outputStream.write(commandTest);
-            return true;
-        } catch (IOException exc) {
-            Log.e("IOException: ", exc.getMessage());
-            return false;
-        }
-    }
+//    private boolean writeToCarTest(byte[] commandTest) {
+//        try {
+//            outputStream.write(commandTest);
+//            return true;
+//        } catch (IOException exc) {
+//            Log.e("IOException: ", exc.getMessage());
+//            return false;
+//        }
+//    }
 
     private int handleInput(String input) {
 
@@ -624,14 +626,14 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     public void transferToCar (String msg){
         msg = " #" + msg + "*"; //coded so that it starts with # and finishes with *
         int amount = msg.length();
-        try {
-            for(int i = 0; i < amount ; i++){
-                outputStream.write(msg.charAt(i));
-            }
-
-        } catch (IOException exc) {
-            Log.e("IOException: ", exc.getMessage());
-        }
+//        try {
+//            for(int i = 0; i < amount ; i++){
+//                outputStream.write(msg.charAt(i));
+//            }
+//
+//        } catch (IOException exc) {
+//            Log.e("IOException: ", exc.getMessage());
+//        }
     }
 
     //just for the sake of waiting some seconds while showing a text before crashing or so
