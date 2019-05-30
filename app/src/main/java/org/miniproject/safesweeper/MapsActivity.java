@@ -2,6 +2,7 @@ package org.miniproject.safesweeper;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
@@ -68,7 +71,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
      * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * we just add a marker near Göteborg, Sweden.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -78,9 +81,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng lindholmen = new LatLng(57.706206, 11.937860);
+        mMap.addMarker(new MarkerOptions().position(lindholmen).title("Marker in Göteborg"));
+       // mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lindholmen,16));
 
         new loadMines().execute();
     }
@@ -88,35 +92,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         @Override
         protected ArrayList<Mine> doInBackground(Void... voids) {
-            
-            if (lowLat != highLat) {    //this means there is a boundary set
-            
-            // Add a thin red line1
-            Polyline line1 = mMap.addPolyline(new PolylineOptions()
-                .add(new LatLng(lowLat, leftLong), new LatLng(lowLat, rightLong))
-                .width(10)
-                .color(Color.RED));
-            
-            // Add a thin red line2
-            Polyline line2 = mMap.addPolyline(new PolylineOptions()
-                .add(new LatLng(lowLat, leftLong), new LatLng(highLat, leftLong))
-                .width(10)
-                .color(Color.RED));
-            
-            // Add a thin red line3
-            Polyline line3 = mMap.addPolyline(new PolylineOptions()
-                .add(new LatLng(highLat, rightLong), new LatLng(highLat, leftLong))
-                .width(10)
-                .color(Color.RED));     
-            
-            // Add a thin red line4
-            Polyline line4 = mMap.addPolyline(new PolylineOptions()
-                .add(new LatLng(highLat, rightLong), new LatLng(lowLat, rightLong))
-                .width(10)
-                .color(Color.RED));
-            }
-            
-            
+
             ArrayList<Mine> mine = conn.getMines();
             return mine;
         }
@@ -128,6 +104,33 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.addMarker(new MarkerOptions().position(toMarker).title("Mine"));
 
 
+            }
+
+            if (lowLat != highLat) {    //this means there is a boundary set
+
+                // Add a thin red line1
+                Polyline line1 = mMap.addPolyline(new PolylineOptions()
+                        .add(new LatLng(lowLat, leftLong), new LatLng(lowLat, rightLong))
+                        .width(10)
+                        .color(Color.RED));
+
+                // Add a thin red line2
+                Polyline line2 = mMap.addPolyline(new PolylineOptions()
+                        .add(new LatLng(lowLat, leftLong), new LatLng(highLat, leftLong))
+                        .width(10)
+                        .color(Color.RED));
+
+                // Add a thin red line3
+                Polyline line3 = mMap.addPolyline(new PolylineOptions()
+                        .add(new LatLng(highLat, rightLong), new LatLng(highLat, leftLong))
+                        .width(10)
+                        .color(Color.RED));
+
+                // Add a thin red line4
+                Polyline line4 = mMap.addPolyline(new PolylineOptions()
+                        .add(new LatLng(highLat, rightLong), new LatLng(lowLat, rightLong))
+                        .width(10)
+                        .color(Color.RED));
             }
 
         }
@@ -156,11 +159,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Toast.makeText(this,"You are already on this page!", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.control_item:
+                this.finish();
+                /*getApplicationContext().
                 Intent intentC = new Intent(this, MainActivity.class);
                 address = address.substring(0, address.indexOf(" ")).trim();   //incase boundary was sent together
                 intentC.putExtra("MAC", address);
                 //intentC.putExtra("MAP", "YES");
-                startActivity(intentC);
+                startActivity(intentC);*/
                 return true;
             case R.id.bluetooth_item:
                 Intent intentB = new Intent(this, BluetoothActivity.class);
