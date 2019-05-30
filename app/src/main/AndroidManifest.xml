@@ -37,7 +37,8 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="Map"></activity>
+            android:label="Map"
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="landscape"></activity>
