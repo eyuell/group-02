@@ -18,7 +18,7 @@ const String TEST_VALUE = "c-83.582704 -142.186889/";
 String gpsLocation = NOT_FOUND;
 #define max_char 200       // number of characters to be saved
 char message[max_char];    // stores the characters message from app
-char previousChar = '';               // the previous input
+char previousChar;               // the previous input
 byte index = 0;            // for array
 String backLat = ""; //boundary 1
 String frontLat = ""; //boundary 2
@@ -88,7 +88,7 @@ const char MANUAL_MODE = 'n';
 const char REPORT_MINE = 'm';
 const char OUT_OF_BOUNDARY = 'o';
 
-char input = '';
+char input;
 
 //Smartcar:
 const int BAUD_RATE = 9600; //for serial
