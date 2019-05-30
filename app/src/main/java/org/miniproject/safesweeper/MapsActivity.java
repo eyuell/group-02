@@ -137,16 +137,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         String text = address.subString(address.indexOf(" ")).trim();
         
         if(text.length() > 0){
-            lowLat = text.subString(0, text.indexOf(" "));
+            lowLat = Double.parseDouble(text.subString(0, text.indexOf(" ")));
             text = text.subString(text.indexOf(" ") + 1);
             
-            highLat = text.subString(0, text.indexOf(" "));
+            highLat = Double.parseDouble(text.subString(0, text.indexOf(" ")));
             text = text.subString(text.indexOf(" ") + 1);
             
-            leftLong = text.subString(0, text.indexOf(" "));
+            leftLong = Double.parseDouble(text.subString(0, text.indexOf(" ")));
             
-            rightLong = text.subString(text.indexOf(" ") + 1);
-            
+            rightLong = Double.parseDouble(text.subString(text.indexOf(" ") + 1));
         }
     }
     
