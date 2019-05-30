@@ -29,6 +29,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String address;
     private boolean connected = true;
     private BluetoothAdapter BA;
+    private double lowLat = 0.0, highLat = 0.0, leftLong = 0.0, rightLong = 0.0;
 
 
     Button menuBtn;
@@ -43,6 +44,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         address = getIntent().getStringExtra("MAC");
+        extractBoundary();
         menuBtn = (Button) findViewById(R.id.menuBtn);
         BA = BluetoothAdapter.getDefaultAdapter();
 
@@ -86,6 +88,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         @Override
         protected ArrayList<Mine> doInBackground(Void... voids) {
+            
+            if (lowLat != highLat) {    //this means there is a boundary set
+            
+            // Add a thin red line1
+            Polyline line1 = mMap.addPolyline(new PolylineOptions()
+                .add(new LatLng(lowLat, leftLong), new LatLng(lowLat, rightLong))
+                .width(10)
+                .color(Color.RED));
+            
+            // Add a thin red line2
+            Polyline line2 = mMap.addPolyline(new PolylineOptions()
+                .add(new LatLng(lowLat, leftLong), new LatLng(highLat, leftLong))
+                .width(10)
+                .color(Color.RED));
+            
+            // Add a thin red line3
+            Polyline line3 = mMap.addPolyline(new PolylineOptions()
+                .add(new LatLng(highLat, rightLong), new LatLng(highLat, leftLong))
+                .width(10)
+                .color(Color.RED));     
+            
+            // Add a thin red line4
+            Polyline line4 = mMap.addPolyline(new PolylineOptions()
+                .add(new LatLng(highLat, rightLong), new LatLng(lowLat, rightLong))
+                .width(10)
+                .color(Color.RED));
+            }
+            
+            
             ArrayList<Mine> mine = conn.getMines();
             return mine;
         }
@@ -102,6 +133,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    public void extractBoundary(){
+        String text = address.subString(address.indexOf(" ")).trim();
+        
+        if(text.length() > 0){
+            lowLat = text.subString(0, text.indexOf(" "));
+            text = text.subString(text.indexOf(" ") + 1);
+            
+            highLat = text.subString(0, text.indexOf(" "));
+            text = text.subString(text.indexOf(" ") + 1);
+            
+            leftLong = text.subString(0, text.indexOf(" "));
+            
+            rightLong = text.subString(text.indexOf(" ") + 1);
+            
+        }
+    }
+    
     public boolean onMenuItemClick(MenuItem item) {
         Toast.makeText(this, "Selected Item: " +item.getTitle(), Toast.LENGTH_SHORT).show();
         switch (item.getItemId()) {
